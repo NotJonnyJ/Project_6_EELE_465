@@ -36,20 +36,30 @@
 //--------------------------------------------------------------------------------
 // Variable declaration
 //--------------------------------------------------------------------------------
-#define Slave_Address1 0x020; 
-#define Slave_Address2 0x010; 
+#define Slave_Address1 0x020; //LED
+#define Slave_Address2 0x010; //LCD
+#define Slave_Address3 0x0D1; //RTC
+#define Slave_Address4 0b1001001; //LM29 Temp Sensor
 int switch_In;
 int i;
 char char_In;
 volatile unsigned int ADC_Value = 0;
-int ADC_array[9];
 short I2C_Message[1];
 volatile int n = 0;
 volatile int timer = 0;
+volatile int timerPos = 0;
 volatile float voltage = 0;
 volatile float temperature = 0;
 volatile float tempAverage = 0;
 volatile float tempArray[9];
+volatile float LM92_array[9];
+char Data_in;
+
+//Function declerations
+void I2C_INIT();
+void keypadInit();
+void ADCInit();
+void timerInit();
 
 //-----------------------------------START MAIN------------------------
 int main(void) {
@@ -62,10 +72,13 @@ int main(void) {
     WDTCTL = WDTPW | WDTHOLD;
     I2C_INIT();
     __delay_cycles(5000);
+
     keypadInit();
     __delay_cycles(5000);
+
     ADCInit();
     __delay_cycles(5000);
+
     timerInit();
     __delay_cycles(5000);
 
@@ -86,12 +99,15 @@ int main(void) {
     while (1) {
         if(timer == 1){
             timer = 0;
-            ADCCTL0 |= ADCENC | ADCSC; //Enable the Start conversion
-            __delay_cycles(10000);
-            insertTemp(temperature, tempArray); 
-            __delay_cycles(5000);
-            tempAverage = averager(tempArray);
-            __delay_cycles(5000);
+            if(timerPos == 1){ // 0.5 Seconds has passed -- Pull temp data from LM19 and LM92
+                halfSecond();
+                //Setup data collection from LM92 on Peltier Device
+                //Average Data over moving average window
+            }else if(timerPos == 2){  // 0.5 Seconds has passed -- Pull RTC Data
+                fullSecond();
+                //Send RTC time data to LCD in seconds
+                //Also update temp average
+            }
         }else{
             P3DIR &= 0x00;
             P3DIR |= 0xF0;
@@ -101,6 +117,43 @@ int main(void) {
     }
 }
 //-----------------------------------END MAIN-------------------------------
+
+
+
+
+//---------------------------------------------------------------------------
+// Main Timing Blocks
+//---------------------------------------------------------------------------
+void halfSecond(){
+    ADCCTL0 |= ADCENC | ADCSC; //Enable the Start conversion
+    __delay_cycles(10000);
+    insertTemp(temperature, tempArray); 
+    __delay_cycles(5000);
+    tempAverage = averager(tempArray);
+    __delay_cycles(5000);
+
+}
+
+void fullSecond(){
+    ADCCTL0 |= ADCENC | ADCSC; //Enable the Start conversion
+    __delay_cycles(10000);
+    insertTemp(temperature, tempArray); 
+    __delay_cycles(5000);
+    tempAverage = averager(tempArray);
+    __delay_cycles(5000);
+
+    I2C_Message[0] = 0; // Asks RTC for seconds register on RTC
+    I2CSendRTC();       // Because UCB1TBCNT is set to 2 we should pull 2 bytes from the RTC
+
+    //Collect data from RTC
+    //Process data to determine time
+}
+//-----------------------------End Timing Blocks-----------------------------
+
+
+
+
+
 
 //--------------------------------------------------------------------------------
 // Averager - averages temp array over n
@@ -144,10 +197,11 @@ short convertTempSend(float tempAverage){
 //Timer Init
 //-------------------------------------------------------------------------------
 void timerInit(){
+    // 0.5 Second timer for Temp collection
     TB0CTL |= TBCLR;
     TB0CTL |= TBSSEL__ACLK;
     TB0CTL |= MC__UP;
-    TB0CCR0 = 10922;
+    TB0CCR0 = 16284;
 }
 //-----------------------------END_Timer_INIT---------------------------------
 
@@ -306,6 +360,7 @@ void delay(){
 //  I2C Send LED
 //----------------------------------------------------------------
 void I2CSendLED(){
+        UCB1CTLW0 |= UCTR;  
         UCB1TBCNT = 1;  
         UCB1I2CSA = Slave_Address1; 
         UCB1CTLW0 |= UCTR; 
@@ -317,12 +372,55 @@ void I2CSendLED(){
 //  I2C Send LCD
 //----------------------------------------------------------------
 void I2CSendLCD(){
+        UCB1CTLW0 |= UCTR;  
         UCB1TBCNT = 1;  
         UCB1I2CSA = Slave_Address2; 
         UCB1CTLW0 |= UCTR; 
         UCB1CTLW0 |= UCTXSTT; 
 }
 //----------------END_LCD_SEND----------------------------
+
+//----------------------------------------------------------------
+//  I2C Send RTC
+//----------------------------------------------------------------
+void I2CSendRTC(){
+        UCB1CTLW0 |= UCTR;   
+        UCB1TBCNT = 2; // We want to pull from 2 registers 00h and 01h so we want 2 bytes of data  
+        UCB1I2CSA = Slave_Address3; 
+        UCB1CTLW0 |= UCTR; 
+        UCB1CTLW0 |= UCTXSTT;
+        
+        while((UCB0IFG & UCSTPIFG) == 0){}
+        UCB0IFG &= ~UCSTPIFG;
+
+        UCB1CTLW0 &= ~UCTR; 
+        UCB0CTLW0 |= UCTXSTT;
+
+        while((UCB0IFG & UCSTPIFG) == 0){}
+        UCB0IFG &= ~UCSTPIFG;
+}
+//----------------------------End I2C Send LED--------------------------------
+
+//----------------------------------------------------------------
+//  I2C Send LM92
+//----------------------------------------------------------------
+void I2CSendLM92(){
+       UCB1CTLW0 |= UCTR;   
+        UCB1TBCNT = 1; // We want to pull from 2 registers 00h and 01h so we want 2 bytes of data  
+        UCB1I2CSA = Slave_Address4; 
+        UCB1CTLW0 |= UCTR; 
+        UCB1CTLW0 |= UCTXSTT;
+        
+        while((UCB0IFG & UCSTPIFG) == 0){}
+        UCB0IFG &= ~UCSTPIFG;
+
+        UCB1CTLW0 &= ~UCTR; 
+        UCB0CTLW0 |= UCTXSTT;
+
+        while((UCB0IFG & UCSTPIFG) == 0){}
+        UCB0IFG &= ~UCSTPIFG;
+}
+//----------------------------End I2C Send LED--------------------------------
 
 
 //---------------------------------------------------------------------------------------------------
@@ -453,10 +551,19 @@ __interrupt void ISR_Port3_LSN(void){
 #pragma vector = EUSCI_B1_VECTOR
 __interrupt void EUSCI_B1_I2C_ISR(void) {
     __disable_interrupt();
-    if((n > 0) || (I2C_Message[0] == 'A') || (I2C_Message[0] == 'B') || (I2C_Message[0] == 'C') || (I2C_Message[0] == 'D')){
-        UCB1TXBUF = I2C_Message[0];
+    switch(UCB0IV){
+        case 0x16:
+            Data_in = UCB0RXBUF;
+            break;
+        case 0x18:
+            if((n > 0) || (I2C_Message[0] == 'A') || (I2C_Message[0] == 'B') || (I2C_Message[0] == 'C') || (I2C_Message[0] == 'D')){
+            UCB1TXBUF = I2C_Message[0];
+            }
+            __delay_cycles(3000);
+            break;
+        default:
+            break;
     }
-    __delay_cycles(3000);
     __enable_interrupt();
 }
 //----------------------------End USCIB0 I2C Interrupt--------------------------------
@@ -480,11 +587,13 @@ __interrupt void ADC_ISR(void) {
 //-------------------------END_ADC_ISR----------------------------------
 
 //-------------------------------------------------------------------------------
-// Timer Interrupt
+// Timer Interrupts
 //-------------------------------------------------------------------------------
 #pragma vector = TIMER0_B0_VECTOR
+// 0.5 Second timer for Temp collection
 __interrupt void ISR_TB0_Overflow(void) {
         timer = 1;
+        timerPos++;
         TB0CCTL0 &= ~CCIFG;
         if((n != 0)){
             tempAverage = tempAverage - 10;
