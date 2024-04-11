@@ -1,0 +1,122 @@
+[
+   {
+      "directory" : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/Debug",
+      "command"   : "clang++ -I\"/Applications/ti/ccstheia131/ccs/ccs_base/msp430/include\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx\" -I\"/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR2355__ -D_FRWP_ENABLE -D_INFO_FRWP_ENABLE",
+      "file"      : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx/adc.c"
+   },
+   {
+      "directory" : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/Debug",
+      "command"   : "clang++ -I\"/Applications/ti/ccstheia131/ccs/ccs_base/msp430/include\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx\" -I\"/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR2355__ -D_FRWP_ENABLE -D_INFO_FRWP_ENABLE",
+      "file"      : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx/crc.c"
+   },
+   {
+      "directory" : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/Debug",
+      "command"   : "clang++ -I\"/Applications/ti/ccstheia131/ccs/ccs_base/msp430/include\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx\" -I\"/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR2355__ -D_FRWP_ENABLE -D_INFO_FRWP_ENABLE",
+      "file"      : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx/cs.c"
+   },
+   {
+      "directory" : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/Debug",
+      "command"   : "clang++ -I\"/Applications/ti/ccstheia131/ccs/ccs_base/msp430/include\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx\" -I\"/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR2355__ -D_FRWP_ENABLE -D_INFO_FRWP_ENABLE",
+      "file"      : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx/ecomp.c"
+   },
+   {
+      "directory" : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/Debug",
+      "command"   : "clang++ -I\"/Applications/ti/ccstheia131/ccs/ccs_base/msp430/include\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx\" -I\"/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR2355__ -D_FRWP_ENABLE -D_INFO_FRWP_ENABLE",
+      "file"      : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx/eusci_a_spi.c"
+   },
+   {
+      "directory" : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/Debug",
+      "command"   : "clang++ -I\"/Applications/ti/ccstheia131/ccs/ccs_base/msp430/include\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx\" -I\"/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR2355__ -D_FRWP_ENABLE -D_INFO_FRWP_ENABLE",
+      "file"      : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx/eusci_a_uart.c"
+   },
+   {
+      "directory" : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/Debug",
+      "command"   : "clang++ -I\"/Applications/ti/ccstheia131/ccs/ccs_base/msp430/include\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx\" -I\"/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR2355__ -D_FRWP_ENABLE -D_INFO_FRWP_ENABLE",
+      "file"      : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx/eusci_b_i2c.c"
+   },
+   {
+      "directory" : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/Debug",
+      "command"   : "clang++ -I\"/Applications/ti/ccstheia131/ccs/ccs_base/msp430/include\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx\" -I\"/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR2355__ -D_FRWP_ENABLE -D_INFO_FRWP_ENABLE",
+      "file"      : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx/eusci_b_spi.c"
+   },
+   {
+      "directory" : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/Debug",
+      "command"   : "clang++ -I\"/Applications/ti/ccstheia131/ccs/ccs_base/msp430/include\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx\" -I\"/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR2355__ -D_FRWP_ENABLE -D_INFO_FRWP_ENABLE",
+      "file"      : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx/framctl.c"
+   },
+   {
+      "directory" : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/Debug",
+      "command"   : "clang++ -I\"/Applications/ti/ccstheia131/ccs/ccs_base/msp430/include\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx\" -I\"/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR2355__ -D_FRWP_ENABLE -D_INFO_FRWP_ENABLE",
+      "file"      : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx/gpio.c"
+   },
+   {
+      "directory" : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/Debug",
+      "command"   : "clang++ -I\"/Applications/ti/ccstheia131/ccs/ccs_base/msp430/include\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx\" -I\"/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR2355__ -D_FRWP_ENABLE -D_INFO_FRWP_ENABLE",
+      "file"      : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx/icc.c"
+   },
+   {
+      "directory" : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/Debug",
+      "command"   : "clang++ -I\"/Applications/ti/ccstheia131/ccs/ccs_base/msp430/include\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx\" -I\"/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR2355__ -D_FRWP_ENABLE -D_INFO_FRWP_ENABLE",
+      "file"      : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx/lcd_e.c"
+   },
+   {
+      "directory" : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/Debug",
+      "command"   : "clang++ -I\"/Applications/ti/ccstheia131/ccs/ccs_base/msp430/include\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx\" -I\"/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR2355__ -D_FRWP_ENABLE -D_INFO_FRWP_ENABLE",
+      "file"      : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx/mpy32.c"
+   },
+   {
+      "directory" : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/Debug",
+      "command"   : "clang++ -I\"/Applications/ti/ccstheia131/ccs/ccs_base/msp430/include\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx\" -I\"/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR2355__ -D_FRWP_ENABLE -D_INFO_FRWP_ENABLE",
+      "file"      : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx/pmm.c"
+   },
+   {
+      "directory" : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/Debug",
+      "command"   : "clang++ -I\"/Applications/ti/ccstheia131/ccs/ccs_base/msp430/include\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx\" -I\"/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR2355__ -D_FRWP_ENABLE -D_INFO_FRWP_ENABLE",
+      "file"      : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx/rtc.c"
+   },
+   {
+      "directory" : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/Debug",
+      "command"   : "clang++ -I\"/Applications/ti/ccstheia131/ccs/ccs_base/msp430/include\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx\" -I\"/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR2355__ -D_FRWP_ENABLE -D_INFO_FRWP_ENABLE",
+      "file"      : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx/sac.c"
+   },
+   {
+      "directory" : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/Debug",
+      "command"   : "clang++ -I\"/Applications/ti/ccstheia131/ccs/ccs_base/msp430/include\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx\" -I\"/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR2355__ -D_FRWP_ENABLE -D_INFO_FRWP_ENABLE",
+      "file"      : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx/sfr.c"
+   },
+   {
+      "directory" : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/Debug",
+      "command"   : "clang++ -I\"/Applications/ti/ccstheia131/ccs/ccs_base/msp430/include\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx\" -I\"/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR2355__ -D_FRWP_ENABLE -D_INFO_FRWP_ENABLE",
+      "file"      : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx/sysctl.c"
+   },
+   {
+      "directory" : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/Debug",
+      "command"   : "clang++ -I\"/Applications/ti/ccstheia131/ccs/ccs_base/msp430/include\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx\" -I\"/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR2355__ -D_FRWP_ENABLE -D_INFO_FRWP_ENABLE",
+      "file"      : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx/tia.c"
+   },
+   {
+      "directory" : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/Debug",
+      "command"   : "clang++ -I\"/Applications/ti/ccstheia131/ccs/ccs_base/msp430/include\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx\" -I\"/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR2355__ -D_FRWP_ENABLE -D_INFO_FRWP_ENABLE",
+      "file"      : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx/timer_a.c"
+   },
+   {
+      "directory" : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/Debug",
+      "command"   : "clang++ -I\"/Applications/ti/ccstheia131/ccs/ccs_base/msp430/include\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx\" -I\"/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR2355__ -D_FRWP_ENABLE -D_INFO_FRWP_ENABLE",
+      "file"      : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx/timer_b.c"
+   },
+   {
+      "directory" : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/Debug",
+      "command"   : "clang++ -I\"/Applications/ti/ccstheia131/ccs/ccs_base/msp430/include\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx\" -I\"/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR2355__ -D_FRWP_ENABLE -D_INFO_FRWP_ENABLE",
+      "file"      : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx/tlv.c"
+   },
+   {
+      "directory" : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/Debug",
+      "command"   : "clang++ -I\"/Applications/ti/ccstheia131/ccs/ccs_base/msp430/include\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx\" -I\"/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR2355__ -D_FRWP_ENABLE -D_INFO_FRWP_ENABLE",
+      "file"      : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx/wdt_a.c"
+   },
+   {
+      "directory" : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/Debug",
+      "command"   : "clang++ -I\"/Applications/ti/ccstheia131/ccs/ccs_base/msp430/include\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/driverlib/MSP430FR2xx_4xx\" -I\"/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR2355__ -D_FRWP_ENABLE -D_INFO_FRWP_ENABLE",
+      "file"      : "/Users/jon/Documents/EELE465/Project_6_EELE_465/RTC_Testing/main.c"
+   }
+]

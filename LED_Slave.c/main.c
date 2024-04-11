@@ -64,6 +64,9 @@ int main(void)
     P1SEL1 &= ~BIT2;
     P1SEL0 |= BIT2;
 
+    timerInit();
+    delay(1);
+
     //Pinouts for LED BAR
     P1OUT &= 0x00;
     P1DIR |= 0xFF;
@@ -76,6 +79,8 @@ int main(void)
                                             // to activate previously configured port settings
     UCB0CTLW0 &= ~UCSWRST;
     UCB0IE |= UCRXIE0; // ENABLE I2C Rx0
+    TB0CCTL0 &= ~CCIFG;
+    TB0CCTL0 |= CCIE;
     __enable_interrupt(); // enable maskable IRQs
 
 	while(1){
@@ -83,12 +88,23 @@ int main(void)
             newDataFlag = 0;
             switch (DataIn) {
                 case 'A':
-                    pattern = 'A';
-                    heat();
+                    if(pattern != 'A'){
+                        timer = 0;
+                        pattern = 'A';
+                        clear_LED();
+                    }
+                     heat();
+                    
                     break;
                 case 'B':
-                    pattern = 'B';
+                    if(pattern != 'B'){
+                        timer = 0;
+                        pattern = 'B';
+                        clear_LED();
+                        
+                    }
                     cool();
+                    
                     break;
                 case 'C':
                     pattern = 'C';
@@ -100,18 +116,10 @@ int main(void)
                 case 0x2A:
                     clear_LED();
                     break;
-                case 'X':
-                    blink_LED();
-                    break;
-                case 'L':
-                    wrong_Pattern();
-                    break;
                 default:
                     break;
 	        }
-
-        }
-        
+        }  
     }
 	return 0;
 }
@@ -121,7 +129,56 @@ int main(void)
 //-------------------------------------------------------------------------------
 void heat(){
     //Scroll Up
-    //scroll to right 
+    //scroll to right
+    switch (timer) {
+        case 1: 
+            P1OUT |= BIT7;
+            __delay_cycles(30000);
+            break;
+        case 2: 
+            P1OUT |= BIT7;
+            P1OUT |= BIT6;
+            __delay_cycles(30000);
+            break;
+        case 3: 
+            P1OUT |= 0b11100000;
+            __delay_cycles(30000);
+            break;
+        case 4: 
+            P1OUT |= 0b11110000;
+            __delay_cycles(30000);
+            break;
+        case 5: 
+            P1OUT |= 0b11110000;
+            P2OUT |= BIT6;
+            __delay_cycles(30000);
+            break;
+        case 6: 
+            P1OUT |= 0b11110000;
+            P2OUT |= BIT6;
+            P2OUT |= BIT0;
+            __delay_cycles(2000);
+            break;
+        case 7: 
+            P1OUT |= 0b11110010;
+            P2OUT |= BIT6;
+            P2OUT |= BIT0;
+            __delay_cycles(30000);
+            break;
+        case 8: 
+            P1OUT |= 0b11110011;
+            P2OUT |= BIT6;
+            P2OUT |= BIT0;
+            __delay_cycles(30000);
+            break;
+    
+    }
+
+    if(timer > 8){
+        clear_LED();
+        timer = 0;
+    }
+    
 
 }
 //-----------------------------End LED Pattern A----------------------------------
@@ -132,6 +189,52 @@ void heat(){
 void cool(){
     //Scroll down
     //scroll to left
+    switch (timer) {
+        case 1: 
+            P1OUT |= BIT0;
+            __delay_cycles(2000);
+            break;
+        case 2: 
+            P1OUT |= 0b00000011;
+            __delay_cycles(2000);
+            break;
+        case 3: 
+            P1OUT |= 0b00000011;
+            P2OUT |= BIT0;
+            __delay_cycles(2000);
+            break;
+        case 4: 
+            P1OUT |= 0b00000011;
+            P2OUT |= 0b01000001;
+            __delay_cycles(2000);
+            break;
+        case 5: 
+             P1OUT |= 0b00010011;
+            P2OUT |= 0b01000001;
+            __delay_cycles(2000);
+            break;
+        case 6: 
+            P1OUT |= 0b00110011;
+            P2OUT |= 0b01000001;
+            __delay_cycles(2000);
+            break;
+        case 7: 
+            P1OUT |= 0b01110011;
+            P2OUT |= 0b01000001;
+            __delay_cycles(2000);
+            break;
+        case 8: 
+            P1OUT |= 0b11110011;
+            P2OUT |= 0b01000001;
+            __delay_cycles(2000);
+            break;
+    
+    }
+        
+    if(timer > 8){
+        clear_LED();
+        timer = 0;
+    }
 
 }
 //-----------------------------End LED Pattern B----------------------------------
@@ -150,49 +253,32 @@ void clear_LED(){
 //-----------------------------End LED Pattern C----------------------------------
 
 //--------------------------------------------------------------------------------
-// Wrong Password LED pattern
-//--------------------------------------------------------------------------------
-void wrong_Pattern(){
-    blink_LED();
-    blink_LED();
-    clear_LED();
-}
-//-------------------------------End Blink LED------------------------------------
-
-//--------------------------------------------------------------------------------
 // Blink LED
 //--------------------------------------------------------------------------------
 void flashing(){
     P1OUT &= BIT2 | BIT3;
     P2OUT &= ~(BIT0 | BIT6);
-    if((timer % 2) == 0){
+    if((timer - (timer/2) * 2) == 0){
         //One set of flash
         P1OUT |= BIT7;
         P1OUT |= BIT5;
         P2OUT |= BIT6;
         P1OUT |= BIT1;
+       //delay();
+
     }else{
         //Second flash set
         P1OUT |= BIT6;
         P1OUT |= BIT4;
         P2OUT |= BIT0;
         P1OUT |= BIT0;
+       //delay();
     }
+
 }
 //-------------------------------End Blink LED------------------------------------
 
-//--------------------------------------------------------------------------------
-// Clear LED
-//--------------------------------------------------------------------------------
-void clear_LED(){
-        //Turn all LEDs OFF, delay, all ON
-        P1OUT &= BIT2 | BIT3;
-        P2OUT &= ~(BIT0 | BIT6);
-        delay();
-}
-//-------------------------------End Blink LED------------------------------------
-
-void timerInit(){
+void timerInit(){  
     // 0.5 Second timer for Temp collection
     TB0CTL |= TBCLR;
     TB0CTL |= TBSSEL__ACLK;
@@ -203,8 +289,10 @@ void timerInit(){
 //-------------------------------------------------------------------------------
 // Delay
 //-------------------------------------------------------------------------------
-void delay(){
-        for (i = 0; i<30000; i++){};
+void delay(int n){
+        for (i = 0; i<n; i++){
+            __delay_cycles(30000);
+        };
 }
 //--------------------------------End Delay--------------------------------------
 

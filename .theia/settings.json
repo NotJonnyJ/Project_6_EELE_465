@@ -1,0 +1,7 @@
+{
+    "editor.cursorStyle": "block",
+    "editor.acceptSuggestionOnEnter": "on",
+    "editor.autoClosingBrackets": "languageDefined",
+    "editor.cursorSmoothCaretAnimation": false,
+    "git.untrackedChanges": "mixed"
+}
