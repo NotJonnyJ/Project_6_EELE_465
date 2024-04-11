@@ -1,7 +1,7 @@
 [
    {
-      "directory" : "/Users/jon/Documents/EELE465/Project_6_EELE_465/LED_Slave.c/Debug",
-      "command"   : "clang++ -I\"/Applications/ti/ccstheia131/ccs/ccs_base/msp430/include\" -I\"/Users/jon/Documents/EELE465/Project_6_EELE_465/LED_Slave.c\" -I\"/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR2310__",
-      "file"      : "/Users/jon/Documents/EELE465/Project_6_EELE_465/LED_Slave.c/main.c"
+      "directory" : "C:/Users/colte/Documents/College/Classes/Micro HW/Project_06/Project_6_EELE_465/LED_Slave.c/Debug",
+      "command"   : "clang++ -I\"C:/ti/ccstheia131/ccs/ccs_base/msp430/include\" -I\"C:/Users/colte/Documents/College/Classes/Micro HW/Project_06/Project_6_EELE_465/LED_Slave.c\" -I\"C:/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430FR2310__",
+      "file"      : "C:/Users/colte/Documents/College/Classes/Micro HW/Project_06/Project_6_EELE_465/LED_Slave.c/main.c"
    }
 ]
