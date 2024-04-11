@@ -19,8 +19,23 @@
 #include "msp430fr2310.h"
 #include <msp430.h>
 
+<<<<<<< Updated upstream
 volatile short DataIn = '0';
 int i;
+=======
+volatile char DataIn = '0';
+volatile char whole_celsius;
+volatile char fraction_celsius;
+volatile char i;
+volatile char ambientTempWhole;
+volatile char ambientTempDec;
+volatile char plantTempWhole;
+volatile char plantTempDec;
+volatile char mode;
+volatile char printMode;
+volatile char n = 5;
+volatile char t;
+>>>>>>> Stashed changes
 
 int main(void)
 {
@@ -41,6 +56,9 @@ int main(void)
 
     P1SEL1 &= ~BIT2;
     P1SEL0 |= BIT2;
+
+    P1DIR |= BIT0;
+    P1OUT |= BIT0;
 
     PM5CTL0 &= ~LOCKLPM5;
 
@@ -76,6 +94,15 @@ int main(void)
 	lcd_init();
     __delay_cycles(1000000);
 
+<<<<<<< Updated upstream
+=======
+    ambientTempWhole = 12;
+    plantTempWhole = 45;
+    ambientTempDec = 3;
+    plantTempDec = 3;
+    mode = 'A';
+    n = 0;
+>>>>>>> Stashed changes
 	while(1){
     }
 
@@ -184,29 +211,44 @@ void lcd_init(void){
 // write number
 //-------------------------------------------------------------------------------
 void write_number(int temp){
-    short digit1 = temp/100;
-    short digit2 = (temp - (digit1 * 100)) / 10;
-    short digit3 = temp - (digit1 * 100) - (digit2 * 10);
+    short digit1 = temp/10;
+    short digit2 = (temp - (digit1 * 10)) / 10;
     if(digit1 != 0){
         write('0' + digit1);
     } 
-    if(digit1 != 0 || digit2 != 0){
-        write('0' + digit2);
-    }
-    write('0' + digit3);
+    write('0' + digit2);
 }
 //------------------------------end write number---------------------------------
 
 //-------------------------------------------------------------------------------
 // Write first Line
 //-------------------------------------------------------------------------------
+<<<<<<< Updated upstream
 void write_first_line(short n) {
     char L1[] = "Enter n : ";
+=======
+void write_first_line() {
+    char L1[] = "Res=";
+>>>>>>> Stashed changes
     command(0x02);
     for(i = 0; i<(sizeof(L1) - 1); i++){
         write(L1[i]);
     }
+<<<<<<< Updated upstream
     write('0' + n);
+=======
+    write_number(n);
+    write(' ');
+    write(' ');
+    write(' ');
+    write('A');
+    write(':');
+    write_number(ambientTempWhole);
+    write('.');
+    write_number(ambientTempDec);
+    write(223);
+    write('C');
+>>>>>>> Stashed changes
 }
 //---------------------------------End Write First Line------------------------
 
@@ -228,9 +270,15 @@ void write_temp(short temp){
     write(223);
     write('K');
     write(' ');
+<<<<<<< Updated upstream
     write_number(whole_celsius);
+=======
+    write('P');
+    write(':');
+    write_number(plantTempWhole);
+>>>>>>> Stashed changes
     write('.');
-    write_number(fraction_celsius);
+    write_number(plantTempDec);
     write(223);
     write('C');
     write(' ');
@@ -242,6 +290,7 @@ void write_temp(short temp){
 //-------------------------------------------------------------------------------
 #pragma vector = EUSCI_B0_VECTOR
 __interrupt void EUSCI_B0_I2C_ISR(void){
+<<<<<<< Updated upstream
     DataIn = UCB0RXBUF;
     if(DataIn == '#'){
         command(0x01);
@@ -253,6 +302,32 @@ __interrupt void EUSCI_B0_I2C_ISR(void){
         write_first_line(DataIn);
     } else if (DataIn != 0){
         write_temp(DataIn);
+=======
+    P1OUT |= BIT0;
+    char charIn[3] =  UCB0RXBUF;
+    
+
+    switch (charIn[0]){
+        case 'A':
+            ambientTempWhole = charIn[1];
+            ambientTempDec = charIn[2];
+            break;
+        case 'M':
+            mode = charIn[1];
+            break;
+        case 'P':
+            plantTempWhole = charIn[1];
+            plantTempDec = charIn[2];
+            break;
+        case 'T':
+            t = charIn[1];
+        default:
+            break;
+    }
+    if(ambientTempWhole != 0 && mode != 0 && plantTempWhole != 0 ){
+        write_first_line();
+        write_second_line();
+>>>>>>> Stashed changes
     }
 
 }

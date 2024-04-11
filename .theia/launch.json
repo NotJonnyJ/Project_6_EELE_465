@@ -1,0 +1,35 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Master",
+            "type": "ccs-debug",
+            "request": "launch",
+            "project": "Master"
+        },
+        {
+            "name": "LED_Slave.c",
+            "type": "ccs-debug",
+            "request": "launch",
+            "project": "LED_Slave.c"
+        },
+        {
+            "name": "LED_MASTER_CODE",
+            "type": "ccs-debug",
+            "request": "launch",
+            "project": "LED_MASTER_CODE"
+        },
+        {
+            "name": "RTC_Testing",
+            "type": "ccs-debug",
+            "request": "launch",
+            "project": "RTC_Testing"
+        },
+        {
+            "name": "LCD_Slave.c",
+            "type": "ccs-debug",
+            "request": "launch",
+            "project": "LCD_Slave.c"
+        }
+    ]
+}
