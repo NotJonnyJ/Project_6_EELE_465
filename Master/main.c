@@ -54,6 +54,23 @@ volatile float tempAverage = 0;
 volatile float tempArray[9];
 volatile float LM92_array[9];
 char Data_in;
+<<<<<<< Updated upstream
+=======
+float total = 0;
+
+int seconds;
+int Data_in1;
+int Data_in2;
+int Data_in3;
+int finalData;
+float temp;
+int dataCount = 0;
+
+
+int rtcFlag = 0;
+int lm92Flag = 0;
+int ledFlag = 0;
+>>>>>>> Stashed changes
 
 //Function declerations
 void I2C_INIT();
@@ -78,6 +95,19 @@ int main(void) {
 
     ADCInit();
     __delay_cycles(5000);
+<<<<<<< Updated upstream
+=======
+
+    //Timing pin
+    P6DIR |= BIT0;
+
+    //Peltiere Pins
+    P6DIR |= BIT1;  //Heat 
+    P6DIR |= BIT2;  //Cool
+    P6OUT &= ~BIT1;  //Heat 
+    P6OUT &= ~BIT2;  //Cool
+    PM5CTL0 &= ~LOCKLPM5;
+>>>>>>> Stashed changes
 
     timerInit();
     __delay_cycles(5000);
@@ -93,11 +123,13 @@ int main(void) {
     UCB1IE |= UCRXIE0;
     TB0CCTL0 &= ~CCIFG;
     TB0CCTL0 |= CCIE;
+    off();
 
     __enable_interrupt();
 
     while (1) {
         if(timer == 1){
+<<<<<<< Updated upstream
             timer = 0;
             if(timerPos == 1){ // 0.5 Seconds has passed -- Pull temp data from LM19 and LM92
                 halfSecond();
@@ -113,24 +145,64 @@ int main(void) {
             P3DIR |= 0xF0;
             P3OUT |= 0xF0;
             __delay_cycles(5000);
+=======
+            // 0.5 Seconds has passed
+            halfSecond();
+            
+            
+
+        }else if(timer >= 2){ 
+            // 1 Seconds has passed
+            fullSecond();
+            timer = 0;
+            
+>>>>>>> Stashed changes
         }
     }
 }
 //-----------------------------------END MAIN-------------------------------
 
 
+void heat(){
+    P6OUT &= ~BIT2;  // Cool pin off
+    __delay_cycles(50);
+    P6OUT |= BIT1; //Heat pin on
+    __delay_cycles(50);
 
+}
+
+void cool(){
+    P6OUT &= ~BIT1;  // heat pin off
+    __delay_cycles(50);
+    P6OUT |= BIT2; //cool pin on
+    __delay_cycles(50);
+
+}
+
+void off(){
+    P6OUT &= ~BIT2;  // Cool pin off
+    __delay_cycles(50);
+    P6OUT &= ~BIT1; //Heat pin off
+    __delay_cycles(50);
+
+}
 
 //---------------------------------------------------------------------------
 // Main Timing Blocks
 //---------------------------------------------------------------------------
 void halfSecond(){
     ADCCTL0 |= ADCENC | ADCSC; //Enable the Start conversion
+<<<<<<< Updated upstream
     __delay_cycles(10000);
     insertTemp(temperature, tempArray); 
     __delay_cycles(5000);
     tempAverage = averager(tempArray);
     __delay_cycles(5000);
+=======
+    //__delay_cycles(20000);
+    I2CSendLM92();
+    //__delay_cycles(20000);
+>>>>>>> Stashed changes
 
 }
 
@@ -405,6 +477,7 @@ void I2CSendRTC(){
 //  I2C Send LM92
 //----------------------------------------------------------------
 void I2CSendLM92(){
+<<<<<<< Updated upstream
        UCB1CTLW0 |= UCTR;   
         UCB1TBCNT = 1; // We want to pull from 2 registers 00h and 01h so we want 2 bytes of data  
         UCB1I2CSA = Slave_Address4; 
@@ -413,6 +486,18 @@ void I2CSendLM92(){
         
         while((UCB0IFG & UCSTPIFG) == 0){}
         UCB0IFG &= ~UCSTPIFG;
+=======
+    rtcFlag = 0;
+    lm92Flag = 1;
+    UCB1I2CSA = Slave_Address4; 
+    I2C_Message[0] = 0;
+    UCB1TBCNT = 1;
+    UCB1CTLW0 |= UCTR;
+    UCB1CTLW0 |= UCTXSTT;
+     while ((UCB1IFG & UCSTPIFG) == 0){}
+        UCB1IFG &= ~UCSTPIFG;
+   __delay_cycles(20000);
+>>>>>>> Stashed changes
 
         UCB1CTLW0 &= ~UCTR; 
         UCB0CTLW0 |= UCTXSTT;
@@ -441,20 +526,45 @@ __interrupt void ISR_Port3_LSN(void){
             if(char_In == 'A'){
                 I2C_Message[0] = 'A';
                 I2CSendLED();
+<<<<<<< Updated upstream
+=======
+                __delay_cycles(30000);
+                heat();
+>>>>>>> Stashed changes
             }
             if(char_In == 'B'){
                 I2C_Message[0] = 'B';
                 I2CSendLED();
+                cool();
             }
             if(char_In == 'C'){
+<<<<<<< Updated upstream
                 I2C_Message[0] = 'C';
                 I2CSendLED();
                 delay();
+=======
+                if(tempAverage_92 > tempAverage_19){
+                    I2C_Message[0] = 'B';
+                    I2CSendLED();
+                    cool();
+                }else if(tempAverage_92 < tempAverage_19){
+                    I2C_Message[0] = 'A';
+                    I2CSendLED();
+                    heat();
+                }
+                
+                delay(1);
+>>>>>>> Stashed changes
             }
             if(char_In == 'D'){
                 I2C_Message[0] = 'D';
                 I2CSendLED();
+<<<<<<< Updated upstream
                 delay();
+=======
+                delay(1);
+                off();
+>>>>>>> Stashed changes
             }
             if(char_In == '1'){
                 n = 1;
@@ -573,12 +683,17 @@ __interrupt void EUSCI_B1_I2C_ISR(void) {
 //-------------------------------------------------------------------------------
 #pragma vector = ADC_VECTOR
 __interrupt void ADC_ISR(void) {
+    
     ADC_Value = ADCMEM0;
     __disable_interrupt();
     voltage = (ADC_Value*3.3)/(4095);
     __delay_cycles(5000);
     temperature = -1481.96 + sqrt(2196000 + (1.8639 - voltage)/(0.00000388));
+<<<<<<< Updated upstream
     temperature = temperature;
+=======
+    //__delay_cycles(30000);
+>>>>>>> Stashed changes
     //Set scaler to correct the temperature 
     temperature = temperature - 2;
     __delay_cycles(5000);
