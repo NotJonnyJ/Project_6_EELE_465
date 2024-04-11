@@ -3,8 +3,8 @@
 // C. Girardot, J.Hughes EELE465, Project 05
 // April 5. 2024
 //
-//  This code was written to be the slave device as the project 5 LCD screen slave
-//  Displays the ambient room temperature averaged over n amount of samples. 
+//  This code was written to be the slave device as the project 5 LED Light bar slave
+// Displays the ambient room temperature averaged over n amount of samples. 
 //  Display should look like:
 //
 //  Enter n  :  4
@@ -19,18 +19,8 @@
 #include "msp430fr2310.h"
 #include <msp430.h>
 
-volatile char DataIn = '0';
-volatile char whole_celsius;
-volatile char fraction_celsius;
-volatile char i;
-volatile char ambientTempWhole;
-volatile char ambientTempDec;
-volatile char plantTempWhole;
-volatile char plantTempDec;
-volatile char mode;
-volatile char printMode;
-volatile char n = 5;
-volatile char t;
+volatile short DataIn = '0';
+int i;
 
 int main(void)
 {
@@ -51,9 +41,6 @@ int main(void)
 
     P1SEL1 &= ~BIT2;
     P1SEL0 |= BIT2;
-
-    P1DIR |= BIT0;
-    P1OUT |= BIT0;
 
     PM5CTL0 &= ~LOCKLPM5;
 
@@ -89,12 +76,6 @@ int main(void)
 	lcd_init();
     __delay_cycles(1000000);
 
-    ambientTempWhole = 12;
-    plantTempWhole = 45;
-    ambientTempDec = 3;
-    plantTempDec = 3;
-    mode = 'A';
-    n = 0;
 	while(1){
     }
 
@@ -177,18 +158,23 @@ void lcd_init(void){
     command(0x06);
     __delay_cycles(1640);
 
-    char L1[] = "Res=    A:  . ";
-    char L2[] = " :   s  P:  . ";
+    char L1[] = "Enter n : ";
+    char L2[] = "T =    ";
     
     for(i = 0; i<(sizeof(L1) - 1); i++){
         write(L1[i]);
     }
-    write(223);
-    write('C');
     command(0xC0);
     for(i = 0; i<(sizeof(L2) - 1); i++){
         write(L2[i]);
     }
+    write(223);
+    write('K');
+    write(' ');
+    write(' ');
+    write(' ');
+    write(' ');
+    write(' ');
     write(223);
     write('C');
 }
@@ -198,95 +184,77 @@ void lcd_init(void){
 // write number
 //-------------------------------------------------------------------------------
 void write_number(int temp){
-    short digit1 = temp/10;
-    short digit2 = (temp - (digit1 * 10)) / 10;
+    short digit1 = temp/100;
+    short digit2 = (temp - (digit1 * 100)) / 10;
+    short digit3 = temp - (digit1 * 100) - (digit2 * 10);
     if(digit1 != 0){
         write('0' + digit1);
     } 
-    write('0' + digit2);
+    if(digit1 != 0 || digit2 != 0){
+        write('0' + digit2);
+    }
+    write('0' + digit3);
 }
 //------------------------------end write number---------------------------------
 
 //-------------------------------------------------------------------------------
 // Write first Line
 //-------------------------------------------------------------------------------
-void write_first_line() {
-    char L1[] = "Res=";
+void write_first_line(short n) {
+    char L1[] = "Enter n : ";
     command(0x02);
     for(i = 0; i<(sizeof(L1) - 1); i++){
         write(L1[i]);
     }
-    write_number(n);
-    write(' ');
-    write(' ');
-    write(' ');
-    write('A');
-    write(':');
-    write_number(ambientTempWhole);
-    write('.');
-    write_number(ambientTempDec);
-    write(223);
-    write('C');
+    write('0' + n);
 }
 //---------------------------------End Write First Line------------------------
 
 //-------------------------------------------------------------------------------
-// Write second Line
+// Write Temp/Bottom line to screen
 //-------------------------------------------------------------------------------
-void write_second_line() {
+void write_temp(short temp){
+    temp = temp + 100;
+    short whole_celsius = temp/10;
+    short fraction_celsius = temp - (whole_celsius *10);
+    int degrees_kelvin = whole_celsius + 273;
+
     command(0xC0);
-    write(mode);
-    write(':');
-    write_number(t);
-    if(t<10){
-        write(' ');
-    }
-    if (t<100){
-        write('  ');
-    }
-    write('s');
+    write('T');
     write(' ');
+    write('=');
     write(' ');
-    write('P');
-    write(':');
-    write_number(plantTempWhole);
+    write_number(degrees_kelvin);
+    write(223);
+    write('K');
+    write(' ');
+    write_number(whole_celsius);
     write('.');
-    write_number(plantTempDec);
+    write_number(fraction_celsius);
     write(223);
     write('C');
+    write(' ');
 }
-//---------------------------------End Write First Line------------------------
+//---------------------------END write temp-------------------------------------
 
 //-------------------------------------------------------------------------------
 // I2C B0 Interrupt
 //-------------------------------------------------------------------------------
 #pragma vector = EUSCI_B0_VECTOR
 __interrupt void EUSCI_B0_I2C_ISR(void){
-    P1OUT |= BIT0;
-    char charIn[3] =  UCB0RXBUF;
-    
+    DataIn = UCB0RXBUF;
+    if(DataIn == '#'){
+        command(0x01);
+        lcd_init();
+        __delay_cycles(30000);
+    }else if(DataIn == 0){
+        
+    }else if(DataIn < 10){
+        write_first_line(DataIn);
+    } else if (DataIn != 0){
+        write_temp(DataIn);
+    }
 
-    switch (charIn[0]){
-        case 'A':
-            ambientTempWhole = charIn[1];
-            ambientTempDec = charIn[2];
-            break;
-        case 'M':
-            mode = charIn[1];
-            break;
-        case 'P':
-            plantTempWhole = charIn[1];
-            plantTempDec = charIn[2];
-            break;
-        case 'T':
-            t = charIn[1];
-        default:
-            break;
-    }
-    if(ambientTempWhole != 0 && mode != 0 && plantTempWhole != 0 ){
-        write_first_line();
-        write_second_line();
-    }
 }
 //----------------------------End I2C B0 Interrupt--------------------------------
 
