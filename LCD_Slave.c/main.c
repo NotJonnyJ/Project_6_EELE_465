@@ -3,8 +3,8 @@
 // C. Girardot, J.Hughes EELE465, Project 05
 // April 5. 2024
 //
-//  This code was written to be the slave device as the project 5 LED Light bar slave
-// Displays the ambient room temperature averaged over n amount of samples. 
+//  This code was written to be the slave device as the project 5 LCD screen slave
+//  Displays the ambient room temperature averaged over n amount of samples. 
 //  Display should look like:
 //
 //  Enter n  :  4
@@ -19,10 +19,6 @@
 #include "msp430fr2310.h"
 #include <msp430.h>
 
-<<<<<<< Updated upstream
-volatile short DataIn = '0';
-int i;
-=======
 volatile char DataIn = '0';
 volatile char whole_celsius;
 volatile char fraction_celsius;
@@ -35,7 +31,6 @@ volatile char mode;
 volatile char printMode;
 volatile char n = 5;
 volatile char t;
->>>>>>> Stashed changes
 
 int main(void)
 {
@@ -94,15 +89,12 @@ int main(void)
 	lcd_init();
     __delay_cycles(1000000);
 
-<<<<<<< Updated upstream
-=======
     ambientTempWhole = 12;
     plantTempWhole = 45;
     ambientTempDec = 3;
     plantTempDec = 3;
     mode = 'A';
     n = 0;
->>>>>>> Stashed changes
 	while(1){
     }
 
@@ -185,23 +177,18 @@ void lcd_init(void){
     command(0x06);
     __delay_cycles(1640);
 
-    char L1[] = "Enter n : ";
-    char L2[] = "T =    ";
+    char L1[] = "Res=    A:  . ";
+    char L2[] = " :   s  P:  . ";
     
     for(i = 0; i<(sizeof(L1) - 1); i++){
         write(L1[i]);
     }
+    write(223);
+    write('C');
     command(0xC0);
     for(i = 0; i<(sizeof(L2) - 1); i++){
         write(L2[i]);
     }
-    write(223);
-    write('K');
-    write(' ');
-    write(' ');
-    write(' ');
-    write(' ');
-    write(' ');
     write(223);
     write('C');
 }
@@ -223,20 +210,12 @@ void write_number(int temp){
 //-------------------------------------------------------------------------------
 // Write first Line
 //-------------------------------------------------------------------------------
-<<<<<<< Updated upstream
-void write_first_line(short n) {
-    char L1[] = "Enter n : ";
-=======
 void write_first_line() {
     char L1[] = "Res=";
->>>>>>> Stashed changes
     command(0x02);
     for(i = 0; i<(sizeof(L1) - 1); i++){
         write(L1[i]);
     }
-<<<<<<< Updated upstream
-    write('0' + n);
-=======
     write_number(n);
     write(' ');
     write(' ');
@@ -248,61 +227,41 @@ void write_first_line() {
     write_number(ambientTempDec);
     write(223);
     write('C');
->>>>>>> Stashed changes
 }
 //---------------------------------End Write First Line------------------------
 
 //-------------------------------------------------------------------------------
-// Write Temp/Bottom line to screen
+// Write second Line
 //-------------------------------------------------------------------------------
-void write_temp(short temp){
-    temp = temp + 100;
-    short whole_celsius = temp/10;
-    short fraction_celsius = temp - (whole_celsius *10);
-    int degrees_kelvin = whole_celsius + 273;
-
+void write_second_line() {
     command(0xC0);
-    write('T');
+    write(mode);
+    write(':');
+    write_number(t);
+    if(t<10){
+        write(' ');
+    }
+    if (t<100){
+        write('  ');
+    }
+    write('s');
     write(' ');
-    write('=');
     write(' ');
-    write_number(degrees_kelvin);
-    write(223);
-    write('K');
-    write(' ');
-<<<<<<< Updated upstream
-    write_number(whole_celsius);
-=======
     write('P');
     write(':');
     write_number(plantTempWhole);
->>>>>>> Stashed changes
     write('.');
     write_number(plantTempDec);
     write(223);
     write('C');
-    write(' ');
 }
-//---------------------------END write temp-------------------------------------
+//---------------------------------End Write First Line------------------------
 
 //-------------------------------------------------------------------------------
 // I2C B0 Interrupt
 //-------------------------------------------------------------------------------
 #pragma vector = EUSCI_B0_VECTOR
 __interrupt void EUSCI_B0_I2C_ISR(void){
-<<<<<<< Updated upstream
-    DataIn = UCB0RXBUF;
-    if(DataIn == '#'){
-        command(0x01);
-        lcd_init();
-        __delay_cycles(30000);
-    }else if(DataIn == 0){
-        
-    }else if(DataIn < 10){
-        write_first_line(DataIn);
-    } else if (DataIn != 0){
-        write_temp(DataIn);
-=======
     P1OUT |= BIT0;
     char charIn[3] =  UCB0RXBUF;
     
@@ -327,9 +286,7 @@ __interrupt void EUSCI_B0_I2C_ISR(void){
     if(ambientTempWhole != 0 && mode != 0 && plantTempWhole != 0 ){
         write_first_line();
         write_second_line();
->>>>>>> Stashed changes
     }
-
 }
 //----------------------------End I2C B0 Interrupt--------------------------------
 
