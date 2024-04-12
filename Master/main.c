@@ -40,13 +40,16 @@
 #define Slave_Address2 0x010; //LCD
 #define Slave_Address3 0x0068; //RTC
 #define Slave_Address4 0b1001000; //LM92 Temp Sensor
+int timeOut = 100;
+int timerOutVar = 0;
+int t;
 
 int switch_In;
 int i;
 char char_In;
 volatile unsigned int ADC_Value = 0;
 short I2C_Message[1];
-volatile int n = 5;
+volatile int n = 9;
 volatile int timer = 0;
 volatile float voltage = 0;
 volatile float temperature = 0;
@@ -54,9 +57,11 @@ volatile float tempAverage_19 = 0;
 volatile float tempAverage_92 = 0;
 volatile float tempArray[9];
 volatile float LM92_array[9];
+volatile int lcdArray[3];
 char Data_in;
 float total = 0;
 
+int ambient = 0;
 int seconds;
 int Data_in1;
 int Data_in2;
@@ -97,7 +102,17 @@ int main(void) {
 
     ADCInit();
     __delay_cycles(5000);
+
+    P6DIR |= BIT1;
+    P6DIR |= BIT3;
+
+    P6OUT &= ~BIT1;
+    P6OUT &= ~BIT3;
+
+
+
     PM5CTL0 &= ~LOCKLPM5;
+
 
 
     P3IE |= 0x0F;
@@ -116,7 +131,6 @@ int main(void) {
             // 0.5 Seconds has passed
             halfSecond();
             
-            
 
         }else if(timer >= 2){ 
             // 1 Seconds has passed
@@ -133,6 +147,48 @@ int main(void) {
 }
 //-----------------------------------END MAIN-------------------------------
 
+void heat(){
+    P6OUT &= ~BIT3;
+     __delay_cycles(5);
+    //P6.1 Heat
+    P6OUT |= BIT1;
+    __delay_cycles(5);
+    
+
+}
+
+void cool(){
+    P6OUT &= ~BIT1;
+    __delay_cycles(5);
+    //P6.1 Heat
+    P6OUT |= BIT3;
+    __delay_cycles(5);
+    
+}
+
+void off(){
+        P6OUT &= ~BIT3;
+        // Cooling off
+        __delay_cycles(5);
+        P6OUT &= ~BIT1;
+
+}
+
+
+void feedbackLoop(){
+    if(tempAverage_92 > tempAverage_19){
+        I2C_Message[0] = 'B';
+         I2CSendLED();
+            cool();
+        __delay_cycles(100);
+    }else if(tempAverage_92 < tempAverage_19){
+            I2C_Message[0] = 'A';
+        I2CSendLED();
+        heat();
+        __delay_cycles(100);
+    }
+    __delay_cycles(200);
+}
 
 
 
@@ -152,11 +208,15 @@ void fullSecond(){
    delay(5);
    I2CSendRTC();
    delay(5);
- 
-    
+   I2CSendLCD();
+
+   lcdArray[0] = 'T';
+   lcdArray[1] = t/2;
+   I2CSendLCD();
 
 }
 //-----------------------------End Timing Blocks-----------------------------
+
 
 //--------------------------------------------------------------------------------
 // Convert temperature to send over I2C
@@ -360,12 +420,19 @@ void I2CSendLCD(){
         UCB1TBCNT = 1;  
         UCB1I2CSA = Slave_Address2; 
         UCB1CTLW0 |= UCTR; 
-        UCB1CTLW0 |= UCTXSTT; 
+        for(i = 0; i < 3; i++){
+            I2C_Message[0] = lcdArray[i];
+            UCB1CTLW0 |= UCTXSTT; 
+            __delay_cycles(300);
+        }
+        clearLCDArray();
+       
 }
 //----------------END_LCD_SEND----------------------------
 
 void clearRTC(){
-    UCB1I2CSA = Slave_Address3 - 1;
+    UCB1I2CSA = Slave_Address3;
+    //UCB1I2CSA = Slave_Address3 - 1;
     I2C_Message[0] = 0x00;
     UCB1TBCNT = 4;
     UCB1CTLW0 |= UCTR;
@@ -385,7 +452,14 @@ void I2CSendRTC(){
     UCB1TBCNT = 1;
     UCB1CTLW0 |= UCTR;
     UCB1CTLW0 |= UCTXSTT;
-     while ((UCB1IFG & UCSTPIFG) == 0){}
+     while ((UCB1IFG & UCSTPIFG) == 0){
+        /*
+            timerOutVar = 0;
+            timerOutVar++;
+            if(timerOutVar>=timeOut){
+            UCB1IFG &= ~UCSTPIFG;
+        }*/
+     }
         UCB1IFG &= ~UCSTPIFG;
     __delay_cycles(20000);
 
@@ -393,7 +467,9 @@ void I2CSendRTC(){
     UCB1CTLW0 &= ~UCTR; 
     UCB1CTLW0 |= UCTXSTT;
 
-    while((UCB1IFG & UCSTPIFG) == 0){}
+    while((UCB1IFG & UCSTPIFG) == 0){
+
+    }
         UCB1IFG &= ~UCSTPIFG;
 }
 //----------------------------End I2C Send LED--------------------------------
@@ -409,7 +485,9 @@ void I2CSendLM92(){
     UCB1TBCNT = 1;
     UCB1CTLW0 |= UCTR;
     UCB1CTLW0 |= UCTXSTT;
-     while ((UCB1IFG & UCSTPIFG) == 0){}
+    while ((UCB1IFG & UCSTPIFG) == 0){
+    }
+    __delay_cycles(100); 
         UCB1IFG &= ~UCSTPIFG;
     __delay_cycles(20000);
 
@@ -417,11 +495,19 @@ void I2CSendLM92(){
     UCB1CTLW0 &= ~UCTR; 
     UCB1CTLW0 |= UCTXSTT;
 
-    while((UCB1IFG & UCSTPIFG) == 0){}
+    while((UCB1IFG & UCSTPIFG) == 0){
+    }
+    __delay_cycles(100); 
         UCB1IFG &= ~UCSTPIFG;
     
 }
 //----------------------------End I2C Send LED--------------------------------
+
+void clearLCDArray(){
+    lcdArray[0] = 0;
+    lcdArray[1] = 0;
+    lcdArray[2] = 0;
+}
 
 
 //---------------------------------------------------------------------------------------------------
@@ -440,102 +526,72 @@ __interrupt void ISR_Port3_LSN(void){
     __enable_interrupt();
     if(char_In != 216){
             if(char_In == 'A'){
+                lcdArray[0] = 'M';
+                lcdArray[1] = 'A';
+                I2CSendLCD();
+                __delay_cycles(5000);
                 I2C_Message[0] = 'A';
                 I2CSendLED();
-                __delay_cycles(30000);
-                clearRTC();
+                __delay_cycles(10000);
+                heat();
+                __delay_cycles(100);
             }
             if(char_In == 'B'){
+                lcdArray[0] = 'M';
+                lcdArray[1] = 'B';
+                I2CSendLCD();
+                __delay_cycles(5000);
+
+                cool();
                 I2C_Message[0] = 'B';
                 I2CSendLED();
+                __delay_cycles(100);
             }
             if(char_In == 'C'){
-                if(tempAverage_92 > tempAverage_19){
-                    I2C_Message[0] = 'B';
-                    I2CSendLED();
-                }else if(tempAverage_92 < tempAverage_19){
-                    I2C_Message[0] = 'A';
-                    I2CSendLED();
-                }
-                
-                delay(1);
+                lcdArray[0] = 'M';
+                lcdArray[1] = 'C';
+                I2CSendLCD();
+                __delay_cycles(5000);
+                feedbackLoop();
             }
             if(char_In == 'D'){
+                lcdArray[0] = 'M';
+                lcdArray[1] = 'D';
+                I2CSendLCD();
+                __delay_cycles(5000);
+
                 I2C_Message[0] = 'D';
                 I2CSendLED();
                 delay(1);
+                off();
+                __delay_cycles(100);
             }
             if(char_In == '1'){
-                n = 1;
-                //I2C_Message[0] = (char)(n);
-                //I2CSendLCD();
-                //for(i = 0; i < 2; i++){
-                // __delay_cycles(30000);
-                //}
+
             }
             if(char_In == '2'){
-                n = 2;
-                //I2C_Message[0] = (char)(n);
-                //I2CSendLCD();
-                //for(i = 0; i < 2; i++){
-                // __delay_cycles(30000);
-                //}
+
             }
             if(char_In == '3'){
-                n = 3;
-                //I2C_Message[0] = (char)(n);
-                //I2CSendLCD();
-                //for(i = 0; i < 2; i++){
-                // __delay_cycles(30000);
-                //}}
+
             }
             if(char_In == '4'){
-                n = 4;
-                //I2C_Message[0] = (char)(n);
-                //I2CSendLCD();
-                //for(i = 0; i < 2; i++){
-                // __delay_cycles(30000);
-                //}
+
             }
             if(char_In == '5'){
-                n = 5;
-                //I2C_Message[0] = (char)(n);
-                //I2CSendLCD();
-                //for(i = 0; i < 2; i++){
-                // __delay_cycles(30000);
-                //}
+
             }
             if(char_In == '6'){
-                n = 6;
-                //I2C_Message[0] = (char)(n);
-                //I2CSendLCD();
-                //for(i = 0; i < 2; i++){
-                // __delay_cycles(30000);
-                //}}
+
             }
             if(char_In == '7'){
-                n = 7;
-                //I2C_Message[0] = (char)(n);
-                //I2CSendLCD();
-                //for(i = 0; i < 2; i++){
-                // __delay_cycles(30000);
-                //}
+
             }
             if(char_In == '8'){
-                n = 8;
-                //I2C_Message[0] = (char)(n);
-                //I2CSendLCD();
-                //for(i = 0; i < 2; i++){
-                // __delay_cycles(30000);
-                //}
+
             }
             if(char_In == '9'){
-                n = 9;
-                //I2C_Message[0] = (char)(n);
-                //I2CSendLCD();
-                //for(i = 0; i < 2; i++){
-                // __delay_cycles(30000);
-                //}
+
             }
             if(char_In == '*'){
                 I2C_Message[0] = '*';
@@ -579,6 +635,7 @@ __interrupt void EUSCI_B1_I2C_ISR(void) {
                     Data_in1 = Data_in1 << 8;
                     finalData = Data_in1 + Data_in2;
                     finalData = finalData >> 3;
+                    __delay_cycles(5);
                     
                     if(finalData > 200){
                         temp = finalData*0.0625;
@@ -586,14 +643,19 @@ __interrupt void EUSCI_B1_I2C_ISR(void) {
                         for(i = 8; i > 0; i--){
                             LM92_array[i] = LM92_array[i-1];
                          }
-                         LM92_array[0] = temperature;
 
-                         total = 0;
-                        for(i = 0; i < n; i++){
-                            total = total + LM92_array[i];
-                            __delay_cycles(5000);
+                        LM92_array[0] = temp;
+
+                        if(LM92_array[n] != 0){
+                            total = 0;
+                            for(i = 0; i < n; i++){
+                                total = total + LM92_array[i];
+                                __delay_cycles(300);
+                            }
+                            tempAverage_92 = total/n;
+                            __delay_cycles(300);
                         }
-                         tempAverage_92 = total/n;
+                         
                         
                     }
                     break;
@@ -663,13 +725,16 @@ __interrupt void ADC_ISR(void) {
     }
     tempArray[0] = temperature;
 
-    total = 0;
-    for(i = 0; i < n; i++){
+    if(tempArray[n] != 0){
+        total = 0;
+        for(i = 0; i < n; i++){
         total = total + tempArray[i];
-        __delay_cycles(5000);
+        __delay_cycles(300);
+        }
+        tempAverage_19 = total/n;
+         __delay_cycles(300);
     }
-    tempAverage_19 = total/n;
-     __delay_cycles(5000);
+    
      __enable_interrupt();
     
 }
@@ -682,6 +747,7 @@ __interrupt void ADC_ISR(void) {
 // 0.5 Second timer for Temp collection
 __interrupt void ISR_TB0_Overflow(void) {
         __disable_interrupt();
+        t++;
         timer++;
         TB0CCTL0 &= ~CCIFG;
         __enable_interrupt();

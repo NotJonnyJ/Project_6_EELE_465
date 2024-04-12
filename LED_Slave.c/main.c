@@ -133,25 +133,25 @@ void heat(){
     switch (timer) {
         case 1: 
             P1OUT |= BIT7;
-            __delay_cycles(30000);
+            __delay_cycles(2000);
             break;
         case 2: 
             P1OUT |= BIT7;
             P1OUT |= BIT6;
-            __delay_cycles(30000);
+            __delay_cycles(2000);
             break;
         case 3: 
             P1OUT |= 0b11100000;
-            __delay_cycles(30000);
+            __delay_cycles(2000);
             break;
         case 4: 
             P1OUT |= 0b11110000;
-            __delay_cycles(30000);
+            __delay_cycles(2000);
             break;
         case 5: 
             P1OUT |= 0b11110000;
             P2OUT |= BIT6;
-            __delay_cycles(30000);
+            __delay_cycles(2000);
             break;
         case 6: 
             P1OUT |= 0b11110000;
@@ -163,13 +163,13 @@ void heat(){
             P1OUT |= 0b11110010;
             P2OUT |= BIT6;
             P2OUT |= BIT0;
-            __delay_cycles(30000);
+            __delay_cycles(2000);
             break;
         case 8: 
             P1OUT |= 0b11110011;
             P2OUT |= BIT6;
             P2OUT |= BIT0;
-            __delay_cycles(30000);
+            __delay_cycles(2000);
             break;
     
     }

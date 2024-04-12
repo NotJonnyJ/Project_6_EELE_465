@@ -7,6 +7,9 @@ main.obj: /Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.L
 main.obj: /Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/intrinsics_legacy_undefs.h
 main.obj: /Applications/ti/ccstheia131/ccs/ccs_base/msp430/include/legacy.h
 main.obj: /Applications/ti/ccstheia131/ccs/ccs_base/msp430/include/msp430.h
+main.obj: /Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/sys/cdefs.h
+main.obj: /Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/_ti_config.h
+main.obj: /Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/linkage.h
 
 ../main.c:
 
@@ -21,4 +24,10 @@ main.obj: /Applications/ti/ccstheia131/ccs/ccs_base/msp430/include/msp430.h
 /Applications/ti/ccstheia131/ccs/ccs_base/msp430/include/legacy.h:
 
 /Applications/ti/ccstheia131/ccs/ccs_base/msp430/include/msp430.h:
+
+/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/sys/cdefs.h:
+
+/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/_ti_config.h:
+
+/Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/linkage.h:
 

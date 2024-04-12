@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Master",
+            "type": "ccs-debug",
+            "request": "launch",
+            "project": "Master"
+        },
+        {
+            "name": "LCD_Slave.c",
+            "type": "ccs-debug",
+            "request": "launch",
+            "project": "LCD_Slave.c"
+        },
+        {
+            "name": "LED_Slave.c",
+            "type": "ccs-debug",
+            "request": "launch",
+            "project": "LED_Slave.c"
+        }
+    ]
+}
