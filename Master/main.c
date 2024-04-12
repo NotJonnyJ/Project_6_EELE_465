@@ -73,6 +73,7 @@ int dataCount = 0;
 int rtcFlag = 0;
 int lm92Flag = 0;
 int ledFlag = 0;
+char feedbackLoopFlag = 0; 
 
 //Function declerations
 void I2C_INIT();
@@ -140,6 +141,10 @@ int main(void) {
             fullSecond();
             
         }
+
+        if(feedbackLoopFlag == 1){
+            feedbackLoop();
+        }
         
         P3DIR &= 0x00;
         P3DIR |= 0xF0;
@@ -170,6 +175,7 @@ void cool(){
 }
 
 void off(){
+    feedbackLoopFlag = 0;
         P6OUT &= ~BIT3;
         // Cooling off
         __delay_cycles(5);
@@ -214,6 +220,7 @@ void fullSecond(){
    I2CSendLCD();
     lcdArray[0] = 'T';
     lcdArray[1] = t/2;
+    lcdArray[2] = 0;
             I2CSendLCD();
    
 
@@ -420,7 +427,7 @@ void I2CSendLED(){
 //----------------------------------------------------------------
 void I2CSendLCD(){
         UCB1CTLW0 |= UCTR;  
-        UCB1TBCNT = 1;  
+        UCB1TBCNT = 4;  
         UCB1I2CSA = Slave_Address2; 
         UCB1CTLW0 |= UCTR; 
         for(i = 0; i < 3; i++){
@@ -519,18 +526,21 @@ __interrupt void ISR_Port3_LSN(void){
     __enable_interrupt();
     if(char_In != 216){
             if(char_In == 'A'){
+                feedbackLoopFlag = 0;
                 clearRTC();
                 __delay_cycles(500);
 
                 lcdArray[0] = 'T';
                 lcdArray[1] = 0;
+                lcdArray[2] = 0;
                  I2CSendLCD();
-                 __delay_cycles(1000);
+                 __delay_cycles(10000);
 
                 lcdArray[0] = 'M';
                 lcdArray[1] = 'A';
+                lcdArray[2] = 0;
                 I2CSendLCD();
-                __delay_cycles(5000);
+                __delay_cycles(10000);
                 I2C_Message[0] = 'A';
                 I2CSendLED();
                 __delay_cycles(10000);
@@ -538,12 +548,15 @@ __interrupt void ISR_Port3_LSN(void){
                 __delay_cycles(100);
             }
             if(char_In == 'B'){
+                feedbackLoopFlag = 0;
                 lcdArray[0] = 'T';
                 lcdArray[1] = 0;
+                lcdArray[2] = 0;
                  I2CSendLCD();
                  __delay_cycles(1000);
                 lcdArray[0] = 'M';
                 lcdArray[1] = 'B';
+                lcdArray[2] = 0;
                 I2CSendLCD();
                 __delay_cycles(5000);
 
@@ -553,23 +566,29 @@ __interrupt void ISR_Port3_LSN(void){
                 __delay_cycles(100);
             }
             if(char_In == 'C'){
+                feedbackLoopFlag = 1;
                 lcdArray[0] = 'T';
                 lcdArray[1] = 0;
+                lcdArray[2] = 0;
                  I2CSendLCD();
                  __delay_cycles(500);
                 lcdArray[0] = 'M';
                 lcdArray[1] = 'C';
+                lcdArray[2] = 0;
                 I2CSendLCD();
                 __delay_cycles(5000);
                 feedbackLoop();
             }
             if(char_In == 'D'){
+                feedbackLoopFlag = 0;
                 lcdArray[0] = 'T';
                 lcdArray[1] = 0;
+                lcdArray[2] = 0;
                  I2CSendLCD();
                  __delay_cycles(500);
                 lcdArray[0] = 'M';
                 lcdArray[1] = 'D';
+                lcdArray[2] = 0;
                 I2CSendLCD();
                 __delay_cycles(5000);
 

@@ -96,7 +96,7 @@ int main(void)
     //plantTempWhole = 45;
     //ambientTempDec = 3;
     //plantTempDec = 3;
-    //mode = 'A';
+    mode = ' ';
     //n = 0;
 	while(1){
     }
@@ -224,6 +224,10 @@ void write_first_line() {
     write_number(ambientTempDec);
     write(223);
     write('C');
+    write(' ');
+    write(' ');
+    write(' ');
+    write(' ');
 }
 //---------------------------------End Write First Line------------------------
 
@@ -251,6 +255,9 @@ void write_second_line() {
     write_number(plantTempDec);
     write(223);
     write('C');
+    write(' ');
+    write(' ');
+    write(' ');
 }
 //---------------------------------End Write First Line------------------------
 
@@ -270,29 +277,23 @@ __interrupt void EUSCI_B0_I2C_ISR(void){
                 ambientTempWhole = I2Cin[1];
                 ambientTempDec = I2Cin[2];
                 t = 0;
-                write_first_line();
-                __delay_cycles(500);
                 break;
             case 'M':
                 mode = I2Cin[1];
-                write_second_line();
                 break;
             case 'P':
                 plantTempWhole = I2Cin[1];
                 plantTempDec = I2Cin[2];
-                write_second_line();
                 break;
             case 'T':
                 t = I2Cin[1];
-                write_second_line();
             default:
                 break;
         }
 
     }
-    if(ambientTempWhole != 0 && mode != 0 && plantTempWhole != 0 ){
-        write_first_line();
-        write_second_line();
-    }
+   
+    write_first_line();
+    write_second_line();
 }
 //----------------------------End I2C B0 Interrupt--------------------------------
