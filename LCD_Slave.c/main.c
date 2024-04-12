@@ -59,11 +59,7 @@ int main(void)
     P1DIR |= BIT0;
     P1OUT |= BIT0;
 
-    PM5CTL0 &= ~LOCKLPM5;
-
-    UCB0CTLW0 &= ~UCSWRST;
-
-//---------LCD PORTS---------------
+    //---------LCD PORTS---------------
 	P2DIR |=BIT6; //RS
 	P2DIR |=BIT0; //E
     
@@ -81,17 +77,20 @@ int main(void)
 	P1OUT &= ~BIT7;
 //----------END LCD PORTS-----------
 
+    PM5CTL0 &= ~LOCKLPM5;
+
+    UCB0CTLW0 &= ~UCSWRST;
+
 	UCB0IE |= UCRXIE0;
 
 	lcd_init();
-    __delay_cycles(100000);
+    __delay_cycles(30000);
 
     __enable_interrupt();
 
 	int i =0;
 
-	lcd_init();
-    __delay_cycles(1000000);
+    __delay_cycles(30000);
 
     //ambientTempWhole = 12;
     //plantTempWhole = 45;
@@ -126,7 +125,6 @@ void command(char i){
     latch();
     P1OUT = ((i << 4) & 0xF0);
     latch();
-    return;
 }
 //------------------------------END LCD Command--------------------------
 //--------------------------------------------------------------------------
@@ -139,8 +137,6 @@ void write(char i){
     P1OUT = ((i << 4) & 0xF0);
     P2OUT |= BIT6;
     latch();
-    
-    return;
 }
 //----------------------END LECD WRITE COMMAND----------------------
 //------------------------------------------------------------------------
@@ -273,15 +269,18 @@ __interrupt void EUSCI_B0_I2C_ISR(void){
             case 'A':
                 ambientTempWhole = I2Cin[1];
                 ambientTempDec = I2Cin[2];
+                t = 0;
+                write_first_line();
+                __delay_cycles(500);
                 break;
             case 'M':
                 mode = I2Cin[1];
                 write_second_line();
-                __delay_cycles(100);
                 break;
             case 'P':
                 plantTempWhole = I2Cin[1];
                 plantTempDec = I2Cin[2];
+                write_second_line();
                 break;
             case 'T':
                 t = I2Cin[1];

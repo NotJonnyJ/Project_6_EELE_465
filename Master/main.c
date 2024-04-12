@@ -40,7 +40,7 @@
 #define Slave_Address2 0x010; //LCD
 #define Slave_Address3 0x0068; //RTC
 #define Slave_Address4 0b1001000; //LM92 Temp Sensor
-int timeOut = 100;
+int timeOut = 50;
 int timerOutVar = 0;
 int t;
 
@@ -102,6 +102,9 @@ int main(void) {
 
     ADCInit();
     __delay_cycles(5000);
+
+    P6DIR |= BIT0;
+    P6OUT &= ~BIT0;
 
     P6DIR |= BIT1;
     P6DIR |= BIT3;
@@ -209,10 +212,10 @@ void fullSecond(){
    I2CSendRTC();
    delay(5);
    I2CSendLCD();
-
-   lcdArray[0] = 'T';
-   lcdArray[1] = t/2;
-   I2CSendLCD();
+    lcdArray[0] = 'T';
+    lcdArray[1] = t/2;
+            I2CSendLCD();
+   
 
 }
 //-----------------------------End Timing Blocks-----------------------------
@@ -452,14 +455,7 @@ void I2CSendRTC(){
     UCB1TBCNT = 1;
     UCB1CTLW0 |= UCTR;
     UCB1CTLW0 |= UCTXSTT;
-     while ((UCB1IFG & UCSTPIFG) == 0){
-        /*
-            timerOutVar = 0;
-            timerOutVar++;
-            if(timerOutVar>=timeOut){
-            UCB1IFG &= ~UCSTPIFG;
-        }*/
-     }
+     while ((UCB1IFG & UCSTPIFG) == 0){}
         UCB1IFG &= ~UCSTPIFG;
     __delay_cycles(20000);
 
@@ -467,9 +463,7 @@ void I2CSendRTC(){
     UCB1CTLW0 &= ~UCTR; 
     UCB1CTLW0 |= UCTXSTT;
 
-    while((UCB1IFG & UCSTPIFG) == 0){
-
-    }
+    while((UCB1IFG & UCSTPIFG) == 0){}
         UCB1IFG &= ~UCSTPIFG;
 }
 //----------------------------End I2C Send LED--------------------------------
@@ -478,6 +472,7 @@ void I2CSendRTC(){
 //  I2C Send LM92
 //----------------------------------------------------------------
 void I2CSendLM92(){
+    P6OUT ^= BIT0;
     rtcFlag = 0;
     lm92Flag = 1;
     UCB1I2CSA = Slave_Address4; 
@@ -485,8 +480,7 @@ void I2CSendLM92(){
     UCB1TBCNT = 1;
     UCB1CTLW0 |= UCTR;
     UCB1CTLW0 |= UCTXSTT;
-    while ((UCB1IFG & UCSTPIFG) == 0){
-    }
+    while ((UCB1IFG & UCSTPIFG) == 0){}
     __delay_cycles(100); 
         UCB1IFG &= ~UCSTPIFG;
     __delay_cycles(20000);
@@ -495,8 +489,7 @@ void I2CSendLM92(){
     UCB1CTLW0 &= ~UCTR; 
     UCB1CTLW0 |= UCTXSTT;
 
-    while((UCB1IFG & UCSTPIFG) == 0){
-    }
+    while((UCB1IFG & UCSTPIFG) == 0){}
     __delay_cycles(100); 
         UCB1IFG &= ~UCSTPIFG;
     
@@ -526,6 +519,14 @@ __interrupt void ISR_Port3_LSN(void){
     __enable_interrupt();
     if(char_In != 216){
             if(char_In == 'A'){
+                clearRTC();
+                __delay_cycles(500);
+
+                lcdArray[0] = 'T';
+                lcdArray[1] = 0;
+                 I2CSendLCD();
+                 __delay_cycles(1000);
+
                 lcdArray[0] = 'M';
                 lcdArray[1] = 'A';
                 I2CSendLCD();
@@ -537,6 +538,10 @@ __interrupt void ISR_Port3_LSN(void){
                 __delay_cycles(100);
             }
             if(char_In == 'B'){
+                lcdArray[0] = 'T';
+                lcdArray[1] = 0;
+                 I2CSendLCD();
+                 __delay_cycles(1000);
                 lcdArray[0] = 'M';
                 lcdArray[1] = 'B';
                 I2CSendLCD();
@@ -548,6 +553,10 @@ __interrupt void ISR_Port3_LSN(void){
                 __delay_cycles(100);
             }
             if(char_In == 'C'){
+                lcdArray[0] = 'T';
+                lcdArray[1] = 0;
+                 I2CSendLCD();
+                 __delay_cycles(500);
                 lcdArray[0] = 'M';
                 lcdArray[1] = 'C';
                 I2CSendLCD();
@@ -555,6 +564,10 @@ __interrupt void ISR_Port3_LSN(void){
                 feedbackLoop();
             }
             if(char_In == 'D'){
+                lcdArray[0] = 'T';
+                lcdArray[1] = 0;
+                 I2CSendLCD();
+                 __delay_cycles(500);
                 lcdArray[0] = 'M';
                 lcdArray[1] = 'D';
                 I2CSendLCD();
@@ -655,6 +668,16 @@ __interrupt void EUSCI_B1_I2C_ISR(void) {
                             tempAverage_92 = total/n;
                             __delay_cycles(300);
                         }
+                        float new2;
+                        int new3;
+                        int new = tempAverage_92;
+                        new2 = tempAverage_92 - new;
+                        new3 = new2 * 10;
+                        
+                        lcdArray[0] = 'P';
+                        lcdArray[1] =  new;
+                        lcdArray[2] = new3;
+                        I2CSendLCD();
                          
                         
                     }
@@ -725,10 +748,10 @@ __interrupt void ADC_ISR(void) {
     }
     tempArray[0] = temperature;
 
-    if(tempArray[n] != 0){
+    if(tempArray[n-1] != 0){
         total = 0;
         for(i = 0; i < n; i++){
-        total = total + tempArray[i];
+            total = total + tempArray[i];
         __delay_cycles(300);
         }
         tempAverage_19 = total/n;
