@@ -31,6 +31,8 @@ volatile char mode;
 volatile char printMode;
 volatile char n = 5;
 volatile char t;
+volatile char j = 0;
+volatile char I2Cin[3];
 
 int main(void)
 {
@@ -262,27 +264,31 @@ void write_second_line() {
 //-------------------------------------------------------------------------------
 #pragma vector = EUSCI_B0_VECTOR
 __interrupt void EUSCI_B0_I2C_ISR(void){
-    P1OUT |= BIT0;
-    char charIn[3] =  UCB0RXBUF;
-    
+   
+    I2Cin[j] = UCB0RXBUF;
+    j++;
 
-    switch (charIn[0]){
+    if(j > 2) {
+        j = 0;
+        switch (I2Cin[0]){
         case 'A':
-            ambientTempWhole = charIn[1];
-            ambientTempDec = charIn[2];
+            ambientTempWhole = I2Cin[1];
+            ambientTempDec = I2Cin[2];
             break;
         case 'M':
-            mode = charIn[1];
+            mode = I2Cin[1];
             break;
         case 'P':
-            plantTempWhole = charIn[1];
-            plantTempDec = charIn[2];
+            plantTempWhole = I2Cin[1];
+            plantTempDec = I2Cin[2];
             break;
         case 'T':
-            t = charIn[1];
+            t = I2Cin[1];
         default:
             break;
+        }
     }
+    
     if(ambientTempWhole != 0 && mode != 0 && plantTempWhole != 0 ){
         write_first_line();
         write_second_line();

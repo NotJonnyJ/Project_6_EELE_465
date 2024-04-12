@@ -1,7 +1,7 @@
 ******************************************************************************
-                  MSP430 Linker Unix v21.6.1                   
+                  MSP430 Linker PC v21.6.1                     
 ******************************************************************************
->> Linked Sat Apr  6 19:50:24 2024
+>> Linked Thu Apr 11 16:56:46 2024
 
 OUTPUT FILE NAME:   <Master.out>
 ENTRY POINT SYMBOL: "_c_int00_noargs_mpu"  address: 0000a7fa
@@ -292,17 +292,17 @@ MODULE SUMMARY
 
        Module                       code    ro data   rw data
        ------                       ----    -------   -------
-    ./
+    .\
        main.obj                     2502    8         64     
     +--+----------------------------+-------+---------+---------+
        Total:                       2502    8         64     
                                                              
-    /Applications/ti/ccstheia131/ccs/ccs_base/msp430/lib/FR2xx/FRWP_INIT_LIB_CCS_msp430_large_code_small_data.lib
+    C:\ti\ccstheia131\ccs\ccs_base\msp430\lib\FR2xx\FRWP_INIT_LIB_CCS_msp430_large_code_small_data.lib
        frwp_init.obj                60      0         0      
     +--+----------------------------+-------+---------+---------+
        Total:                       60      0         0      
                                                              
-    /Applications/ti/ccstheia131/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/lib/rts430x_lc_sd_eabi.lib
+    C:\ti\ccstheia131\ccs\tools\compiler\ti-cgt-msp430_21.6.1.LTS\lib\rts430x_lc_sd_eabi.lib
        addd.c.obj                   1834    0         0      
        frcdivd.c.obj                1128    0         0      
        e_sqrt.c.obj                 730     0         0      
