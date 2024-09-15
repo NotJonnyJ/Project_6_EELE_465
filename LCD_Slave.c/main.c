@@ -3,8 +3,8 @@
 // C. Girardot, J.Hughes EELE465, Project 05
 // April 5. 2024
 //
-//  This code was written to be the slave device as the project 5 LED Light bar slave
-// Displays the ambient room temperature averaged over n amount of samples. 
+//  This code was written to be the slave device as the project 5 LCD screen slave
+//  Displays the ambient room temperature averaged over n amount of samples. 
 //  Display should look like:
 //
 //  Enter n  :  4
@@ -20,7 +20,15 @@
 #include <msp430.h>
 
 volatile short DataIn = '0';
-int i;
+volatile short whole_celsius;
+volatile short fraction_celsius;
+char i;
+short ambientTemp;
+short plantTemp ;
+char mode;
+char printMode;
+short n;
+char t;
 
 int main(void)
 {
@@ -76,7 +84,13 @@ int main(void)
 	lcd_init();
     __delay_cycles(1000000);
 
+    ambientTemp = 123;
+    plantTemp = 456;
+    mode = 'A';
+    n = 0;
 	while(1){
+        write_first_line(n);
+        write_second_line();
     }
 
 	return 0;
@@ -158,23 +172,18 @@ void lcd_init(void){
     command(0x06);
     __delay_cycles(1640);
 
-    char L1[] = "Enter n : ";
-    char L2[] = "T =    ";
+    char L1[] = "Res=    A:  . ";
+    char L2[] = " :   s  P:  . ";
     
     for(i = 0; i<(sizeof(L1) - 1); i++){
         write(L1[i]);
     }
+    write(223);
+    write('C');
     command(0xC0);
     for(i = 0; i<(sizeof(L2) - 1); i++){
         write(L2[i]);
     }
-    write(223);
-    write('K');
-    write(' ');
-    write(' ');
-    write(' ');
-    write(' ');
-    write(' ');
     write(223);
     write('C');
 }
@@ -201,60 +210,102 @@ void write_number(int temp){
 // Write first Line
 //-------------------------------------------------------------------------------
 void write_first_line(short n) {
-    char L1[] = "Enter n : ";
+    char L1[] = "Res=";
     command(0x02);
     for(i = 0; i<(sizeof(L1) - 1); i++){
         write(L1[i]);
     }
-    write('0' + n);
-}
-//---------------------------------End Write First Line------------------------
-
-//-------------------------------------------------------------------------------
-// Write Temp/Bottom line to screen
-//-------------------------------------------------------------------------------
-void write_temp(short temp){
-    temp = temp + 100;
-    short whole_celsius = temp/10;
-    short fraction_celsius = temp - (whole_celsius *10);
-    int degrees_kelvin = whole_celsius + 273;
-
-    command(0xC0);
-    write('T');
+    write_number(n);
     write(' ');
-    write('=');
     write(' ');
-    write_number(degrees_kelvin);
-    write(223);
-    write('K');
     write(' ');
+    write('A');
+    write(':');
+    whole_celsius = ambientTemp/10;
+    fraction_celsius = ambientTemp - (whole_celsius *10);
     write_number(whole_celsius);
     write('.');
     write_number(fraction_celsius);
     write(223);
     write('C');
-    write(' ');
 }
-//---------------------------END write temp-------------------------------------
+//---------------------------------End Write First Line------------------------
+
+//-------------------------------------------------------------------------------
+// Write second Line
+//-------------------------------------------------------------------------------
+void write_second_line() {
+    command(0xC0);
+    write(mode);
+    write(':');
+    write_number(t);
+    if(t<10){
+        write(' ');
+    }
+    if (t<100){
+        write('  ');
+    }
+    write('s');
+    write(' ');
+    write(' ');
+    write('P');
+    write(':');
+    whole_celsius = plantTemp/10;
+    fraction_celsius = plantTemp - (whole_celsius *10);
+    write_number(whole_celsius);
+    write('.');
+    write_number(fraction_celsius);
+    write(223);
+    write('C');
+}
+//---------------------------------End Write First Line------------------------
 
 //-------------------------------------------------------------------------------
 // I2C B0 Interrupt
 //-------------------------------------------------------------------------------
 #pragma vector = EUSCI_B0_VECTOR
 __interrupt void EUSCI_B0_I2C_ISR(void){
-    DataIn = UCB0RXBUF;
-    if(DataIn == '#'){
-        command(0x01);
-        lcd_init();
-        __delay_cycles(30000);
-    }else if(DataIn == 0){
-        
-    }else if(DataIn < 10){
-        write_first_line(DataIn);
-    } else if (DataIn != 0){
-        write_temp(DataIn);
-    }
+    char charIn =  UCB0RXBUF;
+    if(n> 0){
+        if(charIn < 10){
+            n = charIn;
+            write_first_line(n);
+        } else {
+            switch(charIn){
+                case 10:
+                    printMode = 'A';
+                    break;
+                case 11:
+                    t++;
+                    break;
+                case 12:
+                    printMode = 'P';
+                    break;
+                case 13:
+                    printMode = 'M';
+                    break;
+                default:
+                switch(printMode){
+                        case 'A':
+                            ambientTemp = charIn;
+                            write_first_line(n);
+                            break;
+                        case 'P':
+                            plantTemp = charIn;
+                            write_second_line();
+                            break;
+                        case 'M':
+                            t = 0;
+                            mode = charIn;
+                            write_first_line(n);
+                            write_second_line();
+                            break;
+                }
+                break;
 
+            }
+        }
+    }
 }
 //----------------------------End I2C B0 Interrupt--------------------------------
 
